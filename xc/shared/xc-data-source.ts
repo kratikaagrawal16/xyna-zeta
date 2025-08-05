@@ -30,6 +30,8 @@ export abstract class XcDataSource<T> extends DataSource<T> {
     /** Subject for the mark for change trigger */
     private readonly _markForSubject = new Subject<void>();
 
+    private readonly _markForReset = new Subject<void>();
+
     /** Determines how many refreshing calls are pending */
     private _refreshCounter = 0;
 
@@ -88,6 +90,9 @@ export abstract class XcDataSource<T> extends DataSource<T> {
         return this._markForSubject.asObservable();
     }
 
+    get markForReset(): Observable<void> {
+        return this._markForReset.asObservable();
+    }
 
     /**
      * Triggers a mark for change, so the view component can perform a change detection cycle
@@ -96,6 +101,9 @@ export abstract class XcDataSource<T> extends DataSource<T> {
         this._markForSubject.next();
     }
 
+    triggerMarkForReset() {
+        this._markForReset.next();
+    }
 
     /**
      * Refreshes the data source, e. g. making server call to fetch new data

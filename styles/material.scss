@@ -100,7 +100,7 @@ html.cdk-global-scrollblock {
 }
 
 .cdk-overlay-pane {
-    .mat-mdc-autocomplete-panel {
+    .mat-mdc-autocomplete-panel, .mat-mdc-select-panel  {
         margin-top: $xc-form-autocomplete-panel-margin-top;
         background-color: $xc-form-autocomplete-panel-background-color;
         border: $xc-form-autocomplete-panel-border-width solid $xc-form-autocomplete-panel-border-color;
@@ -113,11 +113,14 @@ html.cdk-global-scrollblock {
             }
         }
 
+        .mat-pseudo-checkbox.mat-pseudo-checkbox-full {
+        border: 1px solid $xc-form-autocomplete-panel-border-color !important;
+        }
+
         .mat-mdc-option {
             color: $xc-form-autocomplete-option-color;
             background-color: $xc-form-autocomplete-option-background-color;
             min-height: 32px;
-
             /**
          * It's not possible to set custom height due to misalignment when scrolling using cursor keys.
          * See https://github.com/angular/material2/issues/7205 for reference.

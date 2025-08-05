@@ -62,6 +62,7 @@ export abstract class XcFormTemplate<D, S, W extends XcDataWrapper<D, S> = XcDat
     placeholder = '';
     suffix = '';
     tooltip = '';
+    filterMultiselect = false;
     floatLabel: FloatStyle = FloatStyle.always;
     required: boolean;
 
@@ -92,7 +93,9 @@ export class XcDefinitionListEntryTemplate extends XcTemplate {
 export class XcFormAutocompleteTemplate extends XcFormTemplate<XcOptionItem, XcOptionItemValueType, XcAutocompleteDataWrapper> {
     asInput = false;
     asDropdown = false;
-
+    asMultiselect = false;
+    reset = false; 
+    
     constructor(autocompleteDataWrapper: XcAutocompleteDataWrapper, validators: ValidatorFn[] = []) {
         super(autocompleteDataWrapper, validators);
     }

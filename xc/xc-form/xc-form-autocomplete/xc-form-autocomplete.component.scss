@@ -15,77 +15,121 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-$xc-form-dropdown-border-width: unset !default;
-$xc-form-dropdown-border-color: unset !default;
-$xc-form-dropdown-border-color-focus: unset !default;
-$xc-form-dropdown-border-color-disabled: unset !default;
-$xc-form-dropdown-border-color-hover: unset !default;
-$xc-form-dropdown-border-color-active: unset !default;
+ $xc-form-dropdown-border-width: unset !default;
+ $xc-form-dropdown-border-color: unset !default;
+ $xc-form-dropdown-border-color-focus: unset !default;
+ $xc-form-dropdown-border-color-disabled: unset !default;
+ $xc-form-dropdown-border-color-hover: unset !default;
+ $xc-form-dropdown-border-color-active: unset !default;
+ 
+ $xc-form-dropdown-background-color: unset !default;
+ $xc-form-dropdown-background-color-focus: unset !default;
+ $xc-form-dropdown-background-color-disabled: unset !default;
+ $xc-form-dropdown-background-color-hover: unset !default;
+ $xc-form-dropdown-background-color-active: unset !default;
+ 
+ 
+ @import '../xc-form-base/xc-form-base.component';
+ 
+ 
+ :host {
 
-$xc-form-dropdown-background-color: unset !default;
-$xc-form-dropdown-background-color-focus: unset !default;
-$xc-form-dropdown-background-color-disabled: unset !default;
-$xc-form-dropdown-background-color-hover: unset !default;
-$xc-form-dropdown-background-color-active: unset !default;
 
+     &.as-dropdown {
+         input {
+             cursor: pointer;
+             caret-color: transparent;
 
-@import '../xc-form-base/xc-form-base.component';
+ 
+             &:read-only,
+             &:disabled {
+                 cursor: text;
+                 color: #262626;
+             }
+         }
+ 
+         .mat-mdc-form-field ::ng-deep .mat-mdc-form-field-suffix {
+             pointer-events: none;
+ 
+             .mat-icon {
+                 font-size: 26px;
+                 line-height: 24px;
+             }
+         }
+ 
+         input,
+         textarea {
+             background-color: $xc-form-dropdown-background-color-disabled;
+             border-width: $xc-form-dropdown-border-width;
+             border-color: $xc-form-dropdown-border-color-disabled;
+ 
+             &:not(:disabled):not(:read-only) {
+                 border-color: $xc-form-dropdown-border-color;
+                 background-color: $xc-form-dropdown-background-color;
+ 
+                 &:hover {
+                     background-color: $xc-form-dropdown-background-color-hover;
+                     border-color: $xc-form-dropdown-border-color-hover;
+                 }
+ 
+                 &:focus {
+                     background-color: $xc-form-dropdown-background-color-focus;
+                     border-color: $xc-form-dropdown-border-color-focus;
+                 }
+ 
+                 &:active {
+                     background-color: $xc-form-dropdown-background-color-active;
+                     border-color: $xc-form-dropdown-border-color-active;
+                 }
+             }
+         }
+     }
+ 
+     .hidden-field {
+         position: absolute;
+         top: -100px;
+         z-index: -1000;
+         visibility: hidden;
+     }
 
+}
 
-:host {
+.multiselect-actions {
+  background: #fafafa;
+  padding: .5em .5em .5em 0em;
+  gap: .5em;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  position: sticky;
+  bottom: 0;
+}
 
-    &.as-dropdown {
-        input {
-            cursor: pointer;
-            caret-color: transparent;
+.multiselect-input {
+  width: fit-content !important;
+  white-space: nowrap;
+  overflow-x: auto;
+  background-color: white !important;
+  border: 1px solid #b2b2b2 !important; /* Force border visibility */
+  border-radius: 4px !important; /* Ensure consistent border radius */
 
-            &:read-only,
-            &:disabled {
-                cursor: text;
-            }
-        }
+}
 
-        .mat-mdc-form-field ::ng-deep .mat-mdc-form-field-suffix {
-            pointer-events: none;
+.hidden-mat-select {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
 
-            .mat-icon {
-                font-size: 26px;
-                line-height: 24px;
-            }
-        }
+//    ::ng-deep .mdc-text-field--outlined .mdc-text-field__input {
+//      border: 1px solid #b2b2b2 !important; /* Force border visibility */
+//      background-color: white !important; /* Ensure consistent background */
+//    }
 
-        input,
-        textarea {
-            background-color: $xc-form-dropdown-background-color-disabled;
-            border-width: $xc-form-dropdown-border-width;
-            border-color: $xc-form-dropdown-border-color-disabled;
-
-            &:not(:disabled):not(:read-only) {
-                border-color: $xc-form-dropdown-border-color;
-                background-color: $xc-form-dropdown-background-color;
-
-                &:hover {
-                    background-color: $xc-form-dropdown-background-color-hover;
-                    border-color: $xc-form-dropdown-border-color-hover;
-                }
-
-                &:focus {
-                    background-color: $xc-form-dropdown-background-color-focus;
-                    border-color: $xc-form-dropdown-border-color-focus;
-                }
-
-                &:active {
-                    background-color: $xc-form-dropdown-background-color-active;
-                    border-color: $xc-form-dropdown-border-color-active;
-                }
-            }
-        }
-    }
-
-    .hidden-field {
-        position: absolute;
-        top: -100px;
-        z-index: -1000;
-        visibility: hidden;
-    }
+   ::ng-deep .mat-mdc-form-field-infix {
+    border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color !important; // Ensure border is applied
+    border-radius: $xc-form-base-input-border-radius !important; // Apply border radius
+    padding: $xc-form-base-input-padding-top $xc-form-base-input-padding-right $xc-form-base-input-padding-bottom $xc-form-base-input-padding-left;
+    background-color: $xc-form-base-input-background-color !important; // Ensure background color is set
 }

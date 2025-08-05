@@ -19,6 +19,7 @@ import { CollectionViewer } from '@angular/cdk/collections';
 
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
+import { EventEmitter, Output } from '@angular/core';
 
 import { Xo, XoObject } from '../../api';
 import { Comparable } from '../../base';
@@ -28,7 +29,8 @@ import { XcSubSelectionModel } from '../shared/xc-selection';
 import { XcSelectionDataSource } from '../shared/xc-selection-data-source';
 import { XcSortDirection } from '../shared/xc-sort';
 import { XcTemplate } from '../xc-template/xc-template';
-
+import { of } from 'rxjs';
+import { Injectable, Injector, Type } from '@angular/core';
 
 export interface XcTableColumn {
     readonly path: string;
@@ -39,6 +41,7 @@ export interface XcTableColumn {
     readonly break?: boolean;
     readonly pre?: boolean;
     readonly filterTooltip?: string;
+    readonly filterMultiselect?: boolean;
 }
 
 
@@ -131,9 +134,9 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
 
     stylesFunction: (row: T, path: string) => string[];
 
-
-    constructor(readonly i18n?: I18nService) {
+    constructor(readonly i18n?: I18nService)  {
         super(new XcSubSelectionModel<T, string>());
+
     }
 
 
@@ -322,6 +325,8 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
         this.filtersReset.next(false);
         this.filterChange.next(false);
         this.triggerMarkForChange();
+        this.triggerMarkForReset();
+    
     }
 
 

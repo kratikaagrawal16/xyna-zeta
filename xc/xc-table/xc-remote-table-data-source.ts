@@ -59,6 +59,9 @@ export class XoTableColumn extends XoObject {
     @XoProperty()
     filterTooltip?: string;
 
+    @XoProperty()
+    filterMultiselect?: boolean;
+
     get asXcTableColumn(): XcTableColumn {
         return {
             name: this.name,
@@ -68,7 +71,8 @@ export class XoTableColumn extends XoObject {
             shrink: this.shrink,
             break: this.break,
             pre: this.pre,
-            filterTooltip: this.filterTooltip
+            filterTooltip: this.filterTooltip,
+            filterMultiselect: this.filterMultiselect
         };
     }
 }
@@ -180,6 +184,7 @@ export interface XoSplicingAccessor<T extends XoObject> {
         disableFilter?: boolean;
         disableSort?: boolean;
         shrink?: boolean;
+        filterMultiselect?: boolean;
     };
 }
 
@@ -201,6 +206,7 @@ export function XoSplicingTableInfoClass<T extends XoObject>(baseClass: XoObject
             column.disableFilter = accessor.items.disableFilter;
             column.disableSort = accessor.items.disableSort;
             column.shrink = accessor.items.shrink;
+            column.filterMultiselect = accessor.items.filterMultiselect;
         }
         return { path: path, idx: idx, column: column, remove: !accessor.items};
     });

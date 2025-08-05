@@ -46,6 +46,8 @@
         [xc-form-autocomplete-options]="instance.dataWrapper.values"
         [xc-form-autocomplete-asinput]="instance.asInput"
         [xc-form-autocomplete-asdropdown]="instance.asDropdown"
+        [xc-form-autocomplete-asmultiselect]="instance.asMultiselect"
+        [xc-form-autocomplete-reset]="instance.filterMultiselect ? (instance.reset || true) : instance.reset"
         xc-tooltip="{{instance.tooltip}}"
     ></xc-form-autocomplete>
     <xc-form-input
