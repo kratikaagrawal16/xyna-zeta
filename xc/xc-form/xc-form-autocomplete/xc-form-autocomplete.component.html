@@ -2,8 +2,6 @@
   <mat-label>{{ label }}</mat-label>
 
 <ng-container *ngIf="multiSelect; else singleSelect">
-<mat-form-field appearance="outline" class="full-width">
-  
   <!-- This input displays selected values and opens the mat-select -->
   <input
     matInput
@@ -14,9 +12,9 @@
     (click)="multiSelectDropdown.open()"
     [attr.aria-label]="ariaLabel"
     [tabIndex]="(readonly || disabled) ? -1 : 0"
+    [formControl]="multiSelectInputControl"
     class="multiselect-input"
   />
-
   <!-- Hidden actual select, still functional -->
   <mat-select
     #multiSelectDropdown
@@ -40,8 +38,6 @@
       <xc-button (click)="applyMultiSelect()">Apply</xc-button>
     </div>
   </mat-select>
-</mat-form-field>
-
 </ng-container>
 
   <ng-template #singleSelect>
