@@ -211,6 +211,7 @@
         filteredOptions: Observable<XcOptionInternalAutocompleteItem[]>;
         filtersResetSubscription: Subscription;
         selectedOption: XcOptionInternalAutocompleteItem;
+        filteredMultiSelectOptions: XcOptionItem[] = [];
 
 
         @ViewChild(MatAutocompleteTrigger, { static: false })
@@ -761,8 +762,7 @@
         multiSelectControl = new FormControl<string[]>([]);
         multiSelectInputControl = new FormControl('');
         private tempMultiSelect: string[] = [];
-
-        filteredMultiSelectOptions: XcOptionItem[] = [];
+        private lastAppliedMultiSelect: string[] = [];
 
     ngOnInit() {
         // Initialize filtered options
@@ -774,6 +774,8 @@
                     opt.name.toLowerCase().includes(filterValue)
                 );
             });
+            // Store initial applied values
+            this.lastAppliedMultiSelect = this.multiSelectControl.value ? [...this.multiSelectControl.value] : [];
         }
     }
 
@@ -797,6 +799,11 @@
         onMultiSelectOpened(opened: boolean) {
             if (opened) {
                 this.tempMultiSelect = [...(this.multiSelectControl.value || [])];
+            } else {
+                // If closed without clicking Apply, restore last applied values
+                this.multiSelectControl.setValue([...this.lastAppliedMultiSelect]);
+                this.multiSelectInputControl.setValue('');
+                this.filteredMultiSelectOptions = this.options || [];
             }
         }
 
@@ -811,14 +818,18 @@
                 .join(' | ');
             const joinedValue = selectedValues.join('|');
             this.optionChange.emit({ name: joinedNames, value: joinedValue });
+            // Store applied values
+            this.lastAppliedMultiSelect = [...selectedValues];
             if (this.multiSelectDropdown) {
                 this.multiSelectDropdown.close();
             }
         }
-        
+
         cancelMultiSelect() {
             // Restore previous selection
-            this.multiSelectControl.setValue([...this.tempMultiSelect]);
+            this.multiSelectControl.setValue([...this.lastAppliedMultiSelect]);
+            this.multiSelectInputControl.setValue('');
+            this.filteredMultiSelectOptions = this.options || [];
             if (this.multiSelectDropdown) {
                 this.multiSelectDropdown.close();
             }

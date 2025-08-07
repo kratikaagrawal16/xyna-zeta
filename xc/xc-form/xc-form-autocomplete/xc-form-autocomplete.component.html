@@ -12,7 +12,6 @@
     (click)="multiSelectDropdown.open()"
     [attr.aria-label]="ariaLabel"
     [tabIndex]="(readonly || disabled) ? -1 : 0"
-    [formControl]="multiSelectInputControl"
     class="multiselect-input"
   />
   <!-- Hidden actual select, still functional -->
