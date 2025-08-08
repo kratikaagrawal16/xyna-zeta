@@ -382,31 +382,12 @@
 
 
         protected select(value?: XcOptionItem) {
-            if (this.multiSelect) {
-                if (value && !this.selectedOptionsMulti.some(opt => opt.value === value.value)) {
-                    this.selectedOptionsMulti.push(value);
-        
-                    // Combine selected items into a single string
-                    const joinedName = this.selectedOptionsMulti.map(opt => opt.name).join('|');
-                    const joinedValue = this.selectedOptionsMulti.map(opt => opt.value).join('|');
-        
-                    const combinedOption: XcOptionItem = {
-                        name: joinedName,
-                        value: joinedValue
-                    };
-        
-                    this.selectedOption = combinedOption;
-                    this.value = combinedOption;
-                    this.optionChange.emit(combinedOption);
-        
-                    this.cdRef.detectChanges();
-                }
-                } else {
-                    if (this.selectedOption !== value) {
+            
+           if (this.selectedOption !== value) {
                 this.option = value;
                 this.optionChange.emit(value);
                 this.cdRef.detectChanges();
-            }
+            
         }
     }
 
@@ -629,15 +610,11 @@
 
 
         optionSelected(option: MatOption) {
-            if (this.multiSelect) {
-                this.select(option.value);
-                // prevent auto-closing the panel in multi-select
-                this.trigger.openPanel();
-            } else {
+         
             this.select(this.value);
             // deselect active option, since we don't want that feature here
             option.deselect();
-        }
+        
     }
 
         openedAutocomplete() {
