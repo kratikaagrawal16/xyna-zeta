@@ -117,6 +117,14 @@ html.cdk-global-scrollblock {
         border: 1px solid $xc-form-autocomplete-panel-border-color !important;
         }
 
+        .mat-pseudo-checkbox.mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked {
+          background-color: $color-white !important;
+        }
+
+        .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+          color: $color-black !important;
+        }
+
         .mat-mdc-option {
             color: $xc-form-autocomplete-option-color;
             background-color: $xc-form-autocomplete-option-background-color;

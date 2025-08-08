@@ -1,7 +1,7 @@
 <mat-form-field [floatLabel]="floatLabel" hideRequiredMarker>
-  <mat-label>{{ label }}</mat-label>
-
-<ng-container *ngIf="multiSelect; else singleSelect">
+    <mat-label>{{label}}</mat-label>
+    
+    <ng-container *ngIf="multiSelect; else singleSelect">
   <!-- This input displays selected values and opens the mat-select -->
   <input
     matInput
@@ -38,56 +38,59 @@
     </div>
   </mat-select>
 </ng-container>
-
-  <ng-template #singleSelect>
-    <input
-      matInput
-      autocomplete="off"
-      [type]="type"
-      [placeholder]="placeholder"
-      [formControl]="formControl"
-      [matAutocomplete]="auto"
-      (mousedown)="mousedown($event)"
-      (focus)="onfocus($event)"
-      (blur)="onblur($event)"
-      [readonly]="readonly"
-      [attr.aria-label]="ariaLabel"
-      [tabIndex]="(readonly || disabled) ? -1 : 0"
-      [required]="required"
-    />
-
-    <div class="hidden-field" aria-live="polite" role="none">
-      {{ activeOption ? activeOption.name : '' }}
-    </div>
-
-    <mat-autocomplete
-      class="zeta-scrollbar"
-      #auto="matAutocomplete"
-      (optionSelected)="optionSelected($event.option)"
-      [displayWith]="optionName"
-      (opened)="openedAutocomplete()"
-      (closed)="closedAutocomplete()"
+<ng-template #singleSelect>
+  <input
+    matInput
+    autocomplete="off"
+    [type]="type"
+    [placeholder]="placeholder"
+        [formControl]="formControl"
+        [matAutocomplete]="auto"
+        (mousedown)="mousedown($event)"
+        (focus)="onfocus($event)"
+        (blur)="onblur($event)"
+        [readonly]="readonly"
+        [attr.aria-label]="ariaLabel"
+        [tabIndex]="(readonly || disabled) ? -1 : 0"
+        [required]="required"
     >
-      <mat-option
-        *ngFor="let option of filteredOptions | async"
-        tabindex="0"
-        [value]="option"
-        [disabled]="option.disabled || readonly"
-        [xc-tooltip]="option.showTooltip ? option.name : ''"
-        [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']"
-      >
-        <xc-icon
-          *ngIf="option.icon; else textTemplate"
-          [xc-icon-name]="option.icon"
-          xc-icon-size="small"
+    <!-- <ng-container *ngIf="readonly || disabled">
+        <input
+            [type]="type"
+            [value]="stringValue"
+            [attr.tabIndex]="readonly ? 0 : -1"
+            [attr.aria-label]="ariaLabel"
+            (focus)="focus.emit($event)"
+            (blur)="blur.emit($event)"
+            [readonly]="readonly"
+            [disabled]="disabled"
+            class="non-editable-input"
         >
-          {{ option.name }}
-        </xc-icon>
-        <ng-template #textTemplate>{{ option.name }}</ng-template>
-      </mat-option>
+    </ng-container> -->
+    <!-- screen reader (like JAWS) read fields, which are attributed with 'aria-live', aloud when their value changes -->
+    <!-- this hidden-field is a fall-back to insure that screenreader read the currently active (!= selected) field aloud -->
+    <div class="hidden-field" aria-live="polite" role="none">{{activeOption ? activeOption.name : ''}}</div>
+    <mat-autocomplete
+        class="zeta-scrollbar"
+        #auto="matAutocomplete"
+        (optionSelected)="optionSelected($event.option)"
+        [displayWith]="optionName"
+        (opened)="openedAutocomplete()"
+        (closed)="closedAutocomplete()"
+    >
+        <mat-option
+            *ngFor="let option of filteredOptions | async"
+            tabindex="0"
+            [value]="option"
+            [disabled]="option.disabled || readonly"
+            [xc-tooltip]="option.showTooltip ? option.name : ''"
+            [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']"
+        >
+            <xc-icon *ngIf="option.icon; else textTemplate" [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name}}</xc-icon>
+            <ng-template #textTemplate>{{option.name}}</ng-template>
+        </mat-option>
     </mat-autocomplete>
-  </ng-template>
-
+</ng-template>
   
     <mat-error *ngIf="errorVisible" align="end">
       {{ errorContent }}
