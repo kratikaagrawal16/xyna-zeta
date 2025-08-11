@@ -698,7 +698,11 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     @Input('xc-form-autocomplete-reset')
     set reset(value: boolean) {
         if (coerceBoolean(value)) {
-            this.resetMultiselectCheckboxes();
+            this.value = false;
+            setTimeout(() => {
+                this.resetMultiselectCheckboxes();
+                this.cdRef.detectChanges();
+            });
         }
     }
 
@@ -812,6 +816,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         this.multiSelectControl?.setValue([]);
         this.multiSelectInputControl.setValue('');
         this.filteredMultiSelectOptions = this.options || [];
+        this.lastAppliedMultiSelect = [];
         this.multiSelectDropdown?.options.forEach(option => option.deselect());
     }
 }
