@@ -88,6 +88,7 @@ export * from './xc-tab-bar/xc-tab.component';
 export * from './xc-table/xc-local-table-data-source';
 export * from './xc-table/xc-remote-table-data-source';
 export * from './xc-table/xc-table-data-source';
+export * from './xc-table/xc-table-detail.directive';
 export * from './xc-table/xc-table.component';
 export * from './xc-template/xc-template-container/template-container-base.model';
 export * from './xc-template/xc-template-container/template-container.model';

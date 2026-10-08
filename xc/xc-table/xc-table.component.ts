@@ -17,14 +17,19 @@
  */
 import { Subscription } from 'rxjs';
 
+<<<<<<< HEAD
 import { NgClass } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, OutputRefSubscription, Signal, signal, ViewChild } from '@angular/core';
+=======
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { AfterContentInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
+>>>>>>> eb8bb5a (Add opt-in under-row expand support to xc-table)
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';
 import { XoObject } from '../../api';
-import { coerceBoolean } from '../../base';
+import { coerceBoolean, Comparable } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { XcIdentityDataWrapper } from '../shared/xc-data-wrapper';
 import { XcOptionItemString } from '../shared/xc-item';
@@ -39,6 +44,7 @@ import { XcTemplateComponent } from '../xc-template/xc-template.component';
 import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { xcTableTranslations_deDE } from './locale/xc-translations.de-DE';
 import { xcTableTranslations_enUS } from './locale/xc-translations.en-US';
+import { XcTableDetailDirective } from './xc-table-detail.directive';
 import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
 
 
@@ -47,9 +53,9 @@ import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
     templateUrl: './xc-table.component.html',
     styleUrls: ['./xc-table.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, XcProgressBarComponent, MatFooterCellDef, MatFooterCell, XcIconButtonComponent, MatSortHeader, XcTemplateComponent, MatCellDef, MatCell, NgClass, XcVarDirective, XcTooltipDirective, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow]
+    imports: [MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, XcProgressBarComponent, MatFooterCellDef, MatFooterCell, XcIconButtonComponent, MatSortHeader, XcTemplateComponent, MatCellDef, MatCell, NgClass, NgTemplateOutlet, XcVarDirective, XcTooltipDirective, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow, XcTableDetailDirective]
 })
-export class XcTableComponent implements AfterViewInit, OnDestroy {
+export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDestroy {
     private readonly cdRef = inject(ChangeDetectorRef);
     private readonly elementRef = inject(ElementRef<HTMLElement>);
     private readonly _a11y = inject(A11yService);
@@ -69,6 +75,13 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private _dataSourceSubscriptions = new Array<Subscription>();
     private _matSort: MatSort;
 
+    /** Internal expand state when parent does not bind xc-table-detailexpanded */
+    private readonly internallyExpandedKeys = new Set<string>();
+
+    /** Opt-in under-row detail template. When absent, table behaviour is unchanged. */
+    @ContentChild(XcTableDetailDirective)
+    detailDirective: XcTableDetailDirective;
+
     private readonly filterTemplates = new Map<string, {
         template: XcFormTemplate<any, any>;
         component?: XcFormBaseComponent
@@ -86,6 +99,14 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
         _i18n.setTranslations(LocaleService.EN_US, xcTableTranslations_enUS);
         _i18n.setTranslations(LocaleService.DE_DE, xcTableTranslations_deDE);
+    }
+
+
+    ngAfterContentInit() {
+        // Detail template ContentChild is available here — refresh view if under-row detail is opted in
+        if (this.hasDetailTemplate) {
+            this.cdRef.markForCheck();
+        }
     }
 
 
@@ -334,6 +355,82 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     get leadingActions(): boolean {
         return this._leadingActions;
+    }
+
+
+    /**
+     * Optional predicate controlling which rows show their under-row detail.
+     * When omitted and a detail template is present, xc-table manages expand state internally.
+     */
+    @Input('xc-table-detailexpanded')
+    detailExpanded: (row: any) => boolean;
+
+
+    /**
+     * Optional id for the detail <tr> (e.g. for scroll-into-view after expand).
+     */
+    @Input('xc-table-detailrowid')
+    detailRowId: (row: any) => string;
+
+
+    get hasDetailTemplate(): boolean {
+        return !!this.detailDirective?.templateRef;
+    }
+
+
+    readonly detailColumnIds = ['$detail'];
+
+
+    isDetailExpanded(row: any): boolean {
+        if (!this.hasDetailTemplate) {
+            return false;
+        }
+        if (this.detailExpanded) {
+            return !!this.detailExpanded(row);
+        }
+        return this.internallyExpandedKeys.has(this.getDetailExpandKey(row));
+    }
+
+
+    /**
+     * Toggle under-row detail for a row. Prefer binding xc-table-detailexpanded for external control;
+     * this updates internal state when that input is not set.
+     */
+    toggleDetail(row: any) {
+        if (!this.hasDetailTemplate) {
+            return;
+        }
+        if (this.detailExpanded) {
+            // Parent owns expand state — callers should update it (e.g. via actionElements)
+            this.cdRef.markForCheck();
+            return;
+        }
+        const key = this.getDetailExpandKey(row);
+        if (this.internallyExpandedKeys.has(key)) {
+            this.internallyExpandedKeys.delete(key);
+        } else {
+            this.internallyExpandedKeys.add(key);
+        }
+        this.cdRef.markForCheck();
+    }
+
+
+    getDetailRowId(row: any): string | null {
+        if (!this.detailRowId) {
+            return null;
+        }
+        return this.detailRowId(row) || null;
+    }
+
+
+    private getDetailExpandKey(row: any): string {
+        if (row && typeof row.uniqueKey === 'string' && row.uniqueKey) {
+            return row.uniqueKey;
+        }
+        if (row instanceof Comparable) {
+            return String(row.uniqueKey ?? '');
+        }
+        return String(this.getRowIndex(row));
     }
 
 

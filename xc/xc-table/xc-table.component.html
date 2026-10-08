@@ -1,4 +1,6 @@
-<table mat-table [dataSource]="dataSource" matSort [matSortDisabled]="!allowSort" matSortDirection="asc" [attr.aria-rowcount]="dataSource?.rows.length + 3">
+<table mat-table [dataSource]="dataSource" matSort [matSortDisabled]="!allowSort" matSortDirection="asc"
+  [multiTemplateDataRows]="hasDetailTemplate"
+  [attr.aria-rowcount]="dataSource?.rows.length + 3">
 
   <!-- Here, container templates are being defined and used later in the actual inner template view of the table -->
   <!-- matColumnDef of the ng-container defines the name which is referenced by *matHeaderRowDef, *matRowDef later on -->
@@ -39,6 +41,19 @@
       </div>
     </td>
   </ng-container>
+
+  <!-- Expandable detail row (opt-in via <ng-template xc-table-detail>) -->
+  @if (hasDetailTemplate) {
+    <ng-container matColumnDef="$detail">
+      <td mat-cell *matCellDef="let row" class="xc-table-detail-cell" [attr.colspan]="columns.length">
+        <!-- width:0 + min-width:100% keeps detail content out of column width calculation -->
+        <div class="xc-table-detail-inner">
+          <ng-container *ngTemplateOutlet="detailDirective.templateRef; context: { $implicit: row }"></ng-container>
+        </div>
+      </td>
+    </ng-container>
+  }
+
   <!-- Container template view of a table body row -->
   @for (column of columns; let i = $index; track i) {
     <ng-container [matColumnDef]="getColumnID(column)">
@@ -84,7 +99,12 @@
                 <div>
                   <!-- chrome bugfix: "&& !actionElement.disabled" is sometimes necessary to prevent click -->
                   @if (actionElement.onShow && actionElement.onShow(row) || !actionElement.onShow) {
+<<<<<<< HEAD
                     <xc-icon-button (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
+=======
+                    <xc-icon-button
+                      (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row); $event.stopPropagation()"
+>>>>>>> eb8bb5a (Add opt-in under-row expand support to xc-table)
                       [class]="actionElement.class"
                       [disabled]="actionElement.disabled"
                       [xc-tooltip]="resolveDynamicString(actionElement.tooltip)"
@@ -116,9 +136,21 @@
     [class.selected]="isRowSelected(row)"
     [class.activated]="isRowActivated(row)"
     [class.visibleactions]="visibleActions"
+    [class.xc-table-row-expanded]="hasDetailTemplate && isDetailExpanded(row)"
+    [attr.aria-expanded]="hasDetailTemplate ? isDetailExpanded(row) : null"
     [attr.aria-selected]="isRowSelected(row)"
     [attr.aria-rowindex]="getRowIndex(row) + 4"
   ></tr>
+  @if (hasDetailTemplate) {
+    <tr mat-row *matRowDef="let row; columns: detailColumnIds;"
+      class="xc-table-detail-row"
+      [class.xc-table-detail-row-expanded]="isDetailExpanded(row)"
+      [hidden]="!isDetailExpanded(row)"
+      [attr.id]="getDetailRowId(row)"
+      (click)="$event.stopPropagation()"
+      (mousedown)="$event.stopPropagation()"
+    ></tr>
+  }
   <!--
   [attr.aria-rowindex]="getRowIndex(row) + 4"
   +1, because aria-rowindex starts with 1 not 0

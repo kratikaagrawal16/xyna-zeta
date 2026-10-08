@@ -358,4 +358,22 @@
     td.align-center {
     text-align: center;
     }
+
+    // Under-row detail (opt-in via <ng-template xc-table-detail>)
+    tr.xc-table-detail-row {
+        td.xc-table-detail-cell {
+            padding: 0;
+            border-bottom: 1px solid $xc-table-cell-vertical-border-color;
+            vertical-align: top;
+            background: transparent;
+        }
+
+        .xc-table-detail-inner {
+            width: 0;
+            min-width: 100%;
+            box-sizing: border-box;
+            padding: 8px 12px 12px;
+        }
+    }
+
 }
