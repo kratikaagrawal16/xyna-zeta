@@ -99,12 +99,8 @@
                 <div>
                   <!-- chrome bugfix: "&& !actionElement.disabled" is sometimes necessary to prevent click -->
                   @if (actionElement.onShow && actionElement.onShow(row) || !actionElement.onShow) {
-<<<<<<< HEAD
-                    <xc-icon-button (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
-=======
                     <xc-icon-button
                       (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row); $event.stopPropagation()"
->>>>>>> eb8bb5a (Add opt-in under-row expand support to xc-table)
                       [class]="actionElement.class"
                       [disabled]="actionElement.disabled"
                       [xc-tooltip]="resolveDynamicString(actionElement.tooltip)"

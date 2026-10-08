@@ -17,13 +17,8 @@
  */
 import { Subscription } from 'rxjs';
 
-<<<<<<< HEAD
-import { NgClass } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, OutputRefSubscription, Signal, signal, ViewChild } from '@angular/core';
-=======
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { AfterContentInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
->>>>>>> eb8bb5a (Add opt-in under-row expand support to xc-table)
+import { AfterContentInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, HostBinding, inject, Input, OnDestroy, OutputRefSubscription, Signal, signal, ViewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
